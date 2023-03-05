@@ -1,8 +1,8 @@
 import React from 'react'
 
-import { Player, Controls } from '@lottiefiles/react-lottie-player';
+import { Player } from '@lottiefiles/react-lottie-player';
 
-
+// components to show Loading status while images being loaded
 const Loading = () => {
   return (
 

@@ -1,9 +1,9 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 
-import { RecoilRoot } from 'recoil'
+import { RecoilRoot } from 'recoil' // for state management
 
-import { ChakraProvider } from '@chakra-ui/react'
+import { ChakraProvider } from '@chakra-ui/react' // for ui elements
 
 import './styles/index.css'
 

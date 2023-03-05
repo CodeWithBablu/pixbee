@@ -1,11 +1,16 @@
-import { Button, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay } from '@chakra-ui/react';
+import { Modal, ModalBody, ModalContent, ModalFooter, ModalOverlay } from '@chakra-ui/react'; //// Componets required from chakra
 import React, { useEffect, useState } from 'react'
-import { useRecoilState } from 'recoil';
+
 import { dataState } from '../atoms/dataAtom';
+import { useRecoilState } from 'recoil';
+
+//// Imported components
 import Loading from './Loading'
 import Search from './NavBar/Search';
 
 import homeImage from "../assets/home-back.jpg";
+
+//// refer all the icons required in Home Page
 
 const likeicon = <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5 mr-1 font-bold">
   <path strokeLinecap="round" strokeLinejoin="round" d="M6.633 10.5c.806 0 1.533-.446 2.031-1.08a9.041 9.041 0 012.861-2.4c.723-.384 1.35-.956 1.653-1.715a4.498 4.498 0 00.322-1.672V3a.75.75 0 01.75-.75A2.25 2.25 0 0116.5 4.5c0 1.152-.26 2.243-.723 3.218-.266.558.107 1.282.725 1.282h3.126c1.026 0 1.945.694 2.054 1.715.045.422.068.85.068 1.285a11.95 11.95 0 01-2.649 7.521c-.388.482-.987.729-1.605.729H13.48c-.483 0-.964-.078-1.423-.23l-3.114-1.04a4.501 4.501 0 00-1.423-.23H5.904M14.25 9h2.25M5.904 18.75c.083.205.173.405.27.602.197.4-.078.898-.523.898h-.908c-.889 0-1.713-.518-1.972-1.368a12 12 0 01-.521-3.507c0-1.553.295-3.036.831-4.398C3.387 10.203 4.167 9.75 5 9.75h1.053c.472 0 .745.556.5.96a8.958 8.958 0 00-1.302 4.665c0 1.194.232 2.333.654 3.375z" />
@@ -47,29 +52,33 @@ const twittericon = <svg width="14" height="12" className='mr-1 stroke-slate-600
 const Home = () => {
 
 
-  const [loading, setLoading] = useState(true);
-  const [modalOpen, setModalOpen] = useState(false);
-  const [modalData, setModalData] = useState("");
+  const [loading, setLoading] = useState(true); //// To check for loading status of data.
+  const [modalOpen, setModalOpen] = useState(false); //// To check whether Image Modal is Open or not.
+  const [modalData, setModalData] = useState(""); //// To pass data to Image Modal.
 
-  const [data, setDataState] = useRecoilState(dataState);
+  const [data, setDataState] = useRecoilState(dataState); //// get state and state setter for fetch Data ( making use of Recoil )
 
 
+  //// Function to handle Modal opening
   const openModal = (photo) => {
     console.log(photo);
     setModalData(photo);
     setModalOpen(true);
   }
 
+  //// To fetch data on First load
   useEffect(() => {
 
     const fetchData = async () => {
 
       setLoading(true);
 
+      //// Fetch the first 30 images from unsplash ( parameter per_page=30 )
       const res = await fetch(`https://api.unsplash.com/photos?per_page=30&client_id=${import.meta.env.VITE_ACCESS_KEY}`);
 
       const data = await res.json();
 
+      // Used setDataState declare in atom
       setDataState((prev) => ({
         ...prev,
         images: data,
@@ -79,7 +88,6 @@ const Home = () => {
     }
 
     setTimeout(() => fetchData(), 2000);
-    // fetchData();
 
   }, []);
 
@@ -115,8 +123,13 @@ const Home = () => {
 
 
             <div className=' mt-20 px-2 w-full columns-1 sm:columns-2 md:columns-3 xl:columns-4 gap-4 space-y-3'>
+              {/* //// Map over data and show images in masonary layout */}
               {
-                data.images &&
+
+                data.images
+
+                &&
+
                 data.images.map((photo) => (
 
                   <div key={photo.id} onClick={() => openModal(photo)} className=' cursor-pointer flex flex-col rounded-xl border-[1px] border-slate-300 dark:bg-primary dark:border-0 overflow-hidden'>
@@ -161,6 +174,9 @@ const Home = () => {
 
                 ))
               }
+
+
+              {/* //// Modal Start */}
 
               <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
                 <ModalOverlay />
@@ -236,6 +252,9 @@ const Home = () => {
                   </ModalFooter>
                 </ModalContent>
               </Modal>
+
+              {/* //// Modal End */}
+
 
             </div>
 
