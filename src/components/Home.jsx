@@ -250,7 +250,7 @@ const Home = () => {
 
                               <div className=' flex items-center space-x-2'>
                                 <span className=' flex items-center text-[14px] font-semibold dark:text-white'>{downloadicon}
-                                  {modalData.downloads >= 1000 ? `${modalData.downloads / 1000}` : `${modalData.downloads}`}
+                                  {modalData.downloads >= 1000 ? `${Math.floor(modalData.downloads / 1000)}` : `${modalData.downloads}`}
                                   {
                                     modalData.downloads >= 1000 &&
                                     <span>k</span>
@@ -258,7 +258,7 @@ const Home = () => {
                                 </span>
 
                                 <span className=' flex items-center text-[14px] font-semibold dark:text-white'>{likeicon}
-                                  {modalData.likes >= 1000 ? `${modalData.likes / 1000}` : `${modalData.likes}`}
+                                  {modalData.likes >= 1000 ? `${Math.floor(modalData.likes / 1000)}` : `${modalData.likes}`}
                                   {
                                     modalData.likes >= 1000 &&
                                     <span>k</span>
