@@ -2,7 +2,7 @@ import { useState } from 'react'
 import Home from './components/Home'
 import Navbar from './components/NavBar/Navbar'
 
-function App() {
+const App = () => {
 
   const [theme, setTheme] = useState(0)
 

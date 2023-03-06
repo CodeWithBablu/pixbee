@@ -28,8 +28,13 @@ const infoicon = <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 
   <path strokeLinecap="round" strokeLinejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
 </svg>;
 
+const downloadicon = <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 mr-2">
+  <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+</svg>;
+
+
 const instaicon = <svg width="15" height="15" className='mr-1 stroke-slate-600' viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <g clip-path="url(#clip0_47_131)">
+  <g clipPath="url(#clip0_47_131)">
     <path d="M10.625 1.25H4.375C2.64911 1.25 1.25 2.64911 1.25 4.375V10.625C1.25 12.3509 2.64911 13.75 4.375 13.75H10.625C12.3509 13.75 13.75 12.3509 13.75 10.625V4.375C13.75 2.64911 12.3509 1.25 10.625 1.25Z" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round" />
     <path d="M10.0001 7.10625C10.0772 7.6264 9.98835 8.15763 9.74616 8.62438C9.50397 9.09113 9.12078 9.46963 8.65108 9.70604C8.18138 9.94246 7.64909 10.0247 7.12993 9.94121C6.61076 9.85767 6.13116 9.61255 5.75934 9.24072C5.38751 8.8689 5.14239 8.38929 5.05885 7.87013C4.97531 7.35097 5.0576 6.81868 5.29402 6.34898C5.53043 5.87928 5.90893 5.49609 6.37568 5.2539C6.84243 5.01171 7.37366 4.92287 7.89381 5C8.42439 5.07868 8.91559 5.32591 9.29487 5.70519C9.67415 6.08447 9.92138 6.57567 10.0001 7.10625Z" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round" />
     <path d="M10.9375 4.0625H10.9438" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round" />
@@ -60,8 +65,15 @@ const Home = () => {
 
 
   //// Function to handle Modal opening
-  const openModal = (photo) => {
-    console.log(photo);
+  const openModal = async (photo) => {
+
+    const res = await fetch(`https://api.unsplash.com/photos/${photo.id}?client_id=${import.meta.env.VITE_ACCESS_KEY}`);
+    const photoData = await res.json();
+    photo = {
+      ...photo,
+      downloads: photoData.downloads,
+      tags: photoData.tags,
+    }
     setModalData(photo);
     setModalOpen(true);
   }
@@ -202,48 +214,80 @@ const Home = () => {
 
                     {modalData &&
 
-                      <div className=' w-full flex items-center justify-between py-4 px-6'>
+                      <div className=' w-full flex flex-col px-2 space-y-2 '>
 
-                        <div className=' flex flex-grow flex-col md:flex-row space-y-3 md:space-y-0 md:space-x-3 '>
+                        <div className=' w-full flex items-center justify-between py-4'>
 
-                          <div className=' flex items-center gap-x-2'>
-                            <img
-                              className=' rounded-full w-10 h-10'
-                              style={{
-                                objectFit: "cover"
-                              }}
-                              src={modalData.user.profile_image.medium}
-                              alt="" />
+                          <div className=' flex flex-grow flex-col md:flex-row space-y-3 md:space-y-0 md:space-x-3 '>
 
-                            <div className=' grid grid-rows-2'>
-                              <span className=' text-secondary dark:text-white text-[13px] font-poppins font-semibold'>{modalData.user.name}</span>
-                              <span className=' text-slate-500 dark:text-dimWhite text-[10px] font-dynapuff font-bold'>@{modalData.user.username}</span>
-                            </div>
-                          </div>
+                            <div className=' flex items-center gap-x-2'>
+                              <img
+                                className=' rounded-full w-10 h-10'
+                                style={{
+                                  objectFit: "cover"
+                                }}
+                                src={modalData.user.profile_image.medium}
+                                alt="" />
 
-
-                          <div className=' flex flex-grow items-center justify-between '>
-
-                            <div className=' grid grid-cols-2 gap-x-2'>
-                              {modalData.user.instagram_username &&
-                                <span className=' cursor-pointer flex items-center text-xs font-dynapuff text-slate-600'>{instaicon} / {modalData.user.instagram_username}</span>
-                              }
-
-                              {modalData.user.twitter_username &&
-                                <span className=' cursor-pointer flex items-center text-xs font-dynapuff text-slate-600'>{twittericon} / {modalData.user.twitter_username}</span>
-                              }
+                              <div className=' grid grid-rows-2'>
+                                <span className=' text-secondary dark:text-white text-[13px] font-poppins font-semibold'>{modalData.user.name}</span>
+                                <span className=' text-slate-500 dark:text-dimWhite text-[10px] font-dynapuff font-bold'>@{modalData.user.username}</span>
+                              </div>
                             </div>
 
-                            <span className=' flex items-center text-[14px] font-semibold dark:text-white'>{likeicon}
-                              {modalData.likes >= 1000 ? `${modalData.likes / 1000}` : `${modalData.likes}`}
-                              {
-                                modalData.likes >= 1000 &&
-                                <span>k</span>
-                              }
-                            </span>
+
+                            <div className=' flex flex-grow items-center justify-between '>
+
+                              <div className=' flex items-center space-x-2'>
+                                {modalData.user.instagram_username &&
+                                  <span className=' cursor-pointer flex items-center text-xs font-dynapuff text-slate-600'>{instaicon} / {modalData.user.instagram_username}</span>
+                                }
+
+                                {modalData.user.twitter_username &&
+                                  <span className=' cursor-pointer flex items-center text-xs font-dynapuff text-slate-600'>{twittericon} / {modalData.user.twitter_username}</span>
+                                }
+                              </div>
+
+                              <div className=' flex items-center space-x-2'>
+                                <span className=' flex items-center text-[14px] font-semibold dark:text-white'>{downloadicon}
+                                  {modalData.downloads >= 1000 ? `${modalData.downloads / 1000}` : `${modalData.downloads}`}
+                                  {
+                                    modalData.downloads >= 1000 &&
+                                    <span>k</span>
+                                  }
+                                </span>
+
+                                <span className=' flex items-center text-[14px] font-semibold dark:text-white'>{likeicon}
+                                  {modalData.likes >= 1000 ? `${modalData.likes / 1000}` : `${modalData.likes}`}
+                                  {
+                                    modalData.likes >= 1000 &&
+                                    <span>k</span>
+                                  }
+                                </span>
+                              </div>
+
+                            </div>
+
                           </div>
 
                         </div>
+
+                        {modalData.tags.length != 0 &&
+
+                          <div className=' pt-2 pb-4'>
+
+                            <h1 className=' text-slate-500 font-bold text-base font-poppins mb-2'>Related Tags :</h1>
+
+                            <div className=' flex flex-wrap '>
+                              {
+                                modalData.tags.map((tag) => {
+                                  if (tag.type == "search")
+                                    return <span key={tag.title} className=' text-sm my-1 mr-2 px-2 bg-slate-200 text-secondary font-medium font-poppins rounded-md'>{tag.title}</span>
+                                })
+                              }
+                            </div>
+                          </div>
+                        }
 
 
                       </div>
